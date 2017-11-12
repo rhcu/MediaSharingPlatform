@@ -96,5 +96,11 @@ def logout():
     session.pop('user',None)
     return redirect('/')
 
+
+@app.route('/showAddWish')
+def showAddWish():
+    return render_template('addWish.html')
+
+
 if __name__ == "__main__":
     app.run(port=5002)
