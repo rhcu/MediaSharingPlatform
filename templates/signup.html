@@ -6,26 +6,28 @@
     
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
  
-    <link href="signup.css" rel="stylesheet">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-   <script>
-					$(function() {
-					$('#btnSignUp').click(function() {
-				 
-						$.ajax({
-							url: '/signUp',
-							data: $('form').serialize(),
-							type: 'POST'
-							success: function(response) {
-								console.log(response);
-							},
-							error: function(error) {
-								console.log(error);
-							}
-						});
-					});
-				});
-   </script>
+   <!-- <link href="signup.css" rel="stylesheet"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+			$(function() {
+				    $('#btnSignUp').click(function() {
+				 		var inputName = $('#inputName').val();
+				 		var inputEmail = $('#inputEmail').val();
+        				var inputPassword = $('#inputPassword').val();
+				        $.ajax({
+				            url: '/signUp',
+				            data: $('form').serialize(),
+				            type: 'POST',
+				            success: function(response) {
+				                console.log(response);
+				            },
+				            error: function(error) {
+				                console.log(error);
+				            }
+				        });
+    			});
+			});
+    </script>
   </head>
  
   <body>
