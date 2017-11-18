@@ -6,61 +6,126 @@
  
  
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
- 
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="static/main.css" rel="stylesheet">
 </head>
  
 <body>
  
-    <div class="container">
-        <div class="header">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active"><a href="#">Home</a>
-                    </li>
-                    <li role="presentation"><a href="/showSignin">Sign In</a>
-                    </li>
-                    <li role="presentation"><a href="/showSignUp">Sign Up</a>
-                    </li>
-                </ul>
-            </nav>
-            <h3 class="text-muted">Python Flask App</h3>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">Pinterest-v1</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="showSignin">Sign In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="showSignUp">Sign Up</a>
+            </li>
+          </ul>
         </div>
- 
-        <div class="jumbotron">
-            <h1>Bucket List App</h1>
+      </div>
+    </nav>
+  
+  </br>
+  </br>
+  </br>
+    <header class="masthead">
+  <div class="overlay">
+  <div class="container">
+  <h1 class="display-1 text-white" >Pinterest-v1</h1>
+          <h1 class="display-4 text-white" >Divide your happy moments with the world!</h2>
             <p class="lead"></p>
             <p><a class="btn btn-lg btn-success" href="/showSignUp" role="button">Sign up today</a>
             </p>
-        </div>
+          </div>
+      </div>
+    </header>
  
-        <div class="row marketing">
-            <div class="col-lg-6">
-                <h4>Bucket List</h4>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-            </div>
- 
-            <div class="col-lg-6">
-                <h4>Bucket List</h4>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-            </div>
-        </div>
- 
-        <footer class="footer">
-            <p>&copy; Supersonic 2017</p>
-        </footer>
- 
+  
+   <section> 
+<div class="container"> 
+    <div class="row align-items-center"> 
+        <div class="col-md-6 order-2"> 
+            <div class="p-5"> 
+                <img class="img-fluid rounded-circle" src="https://www.firestock.ru/wp-content/uploads/2014/10/photodune-7434383-700x714.jpg" 
+                alt=""> 
+            </div> 
+        </div> 
+        <div class="col-md-6 order-1"> 
+           <div class="p-5"> 
+                <h2 class="display-4">Save your moments!</h2> 
+                <p>Keep your memories with close people in our boards</p> 
+            </div> 
+            </div> 
+        </div> 
+</div> 
+</section> 
+
+<section> 
+    <div class="container"> 
+        <div class="row align-items-center"> 
+           <div class="col-md-6"> 
+                <div class="p-5"> 
+                    <img class="img-fluid rounded-circle" src="https://unsplash.it/500/500?image=452" alt=""> 
+                </div> 
+            </div> 
+            <div class="col-md-6"> 
+                <div class="p-5"> 
+                    <h2 class="display-4">We salute you!</h2> 
+                        <p>Friendly design of the app will make your experience unforgetable</p> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+</section> 
+
+<section> 
+<div class="container"> 
+    <div class="row align-items-center"> 
+        <div class="col-md-6 order-2"> 
+            <div class="p-5"> 
+                <img class="img-fluid rounded-circle" src="https://thenextweb.com/wp-content/blogs.dir/1/files/2014/05/1399503143258.jpeg" 
+                alt=""> 
+            </div> 
+        </div>    
+        <div class="col-md-6 order-1"> 
+            <div class="p-5"> 
+                <h2 class="display-4">Let there be a group!</h2> 
+                <p>Either rock, food or cats - you can create your own groups of interest.</p> 
+            </div> 
+        </div> 
+    </div> 
+</div> 
+</section>
+    
+   <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Supersonic 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  </body>
+
     </div>
 </body>
  

@@ -35,7 +35,6 @@ def signUp():
             conn = mysql.connect()
             cursor = conn.cursor()
             _hashed_password = generate_password_hash(_password)
-            print(_hashed_password)
             cursor.callproc('sp_createUser', (_email, _username, _hashed_password))
             data = cursor.fetchall()
             if len(data) is 0:
@@ -68,7 +67,7 @@ def validateLogin():
         cursor.callproc('sp_validateLogin', (_email,))
         data = cursor.fetchall()
         if len(data) > 0:
-            if check_password_hash(str(data[0][2]), _password):
+            if check_password_hash(str(data[0][3]), _password):
                 session['user'] = data[0][0]
                 return redirect('/userHome')
             else:
@@ -101,6 +100,108 @@ def logout():
 def showAddWish():
     return render_template('addWish.html')
 
+
+@app.route('/addWish', methods=['POST'])
+def addWish():
+    try:
+        if session.get('user'):
+            _title = request.form['inputTitle']
+            _description = request.form['inputDescription']
+            _user_id = session.get('user')
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_addItem', (_title, _description, _user_id))
+            data = cursor.fetchall()
+
+            if len(data) is 0:
+                conn.commit()
+                return redirect('/userHome')
+            else:
+                return render_template('error.html', error='An error occurred!')
+
+        else:
+            return render_template('error.html', error='Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/getItem')
+def getItem():
+    try:
+        print("here")
+        if session.get('user'):
+
+            _user_id = session.get('user')
+
+            print("HERE")
+
+            con = mysql.connect()
+            cursor = con.cursor()
+            cursor.callproc('sp_GetItemByUser', (_user_id,))
+            items = cursor.fetchall()
+
+            items_dict = []
+            for item in items:
+                item_dict = {'Id': item[0], 'Title': item[1], 'Description': item[2], 'Date': item[4]}
+                items_dict.append(item_dict)
+
+            return json.dumps(items_dict)
+        else:
+            return render_template('error.html', error='Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+
+
+@app.route('/getItemById', methods=['POST'])
+def getItemById():
+    try:
+        if session.get('user'):
+
+            _id = request.form['id']
+            _user = session.get('user')
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_GetItemById', (_id, _user))
+            result = cursor.fetchall()
+
+            wish = [{'Id': result[0][0], 'Title': result[0][1], 'Description': result[0][2]}]
+
+            return json.dumps(wish)
+        else:
+            return render_template('error.html', error='Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+
+
+@app.route('/updateItem', methods=['POST'])
+def updateItem():
+    try:
+        if session.get('user'):
+            _user = session.get('user')
+            _title = request.form['title']
+            _description = request.form['description']
+            _item_id = request.form['id']
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_updateItem', (_title, _description, _item_id, _user))
+            data = cursor.fetchall()
+
+            if len(data) is 0:
+                conn.commit()
+                return json.dumps({'status': 'OK'})
+            else:
+                return json.dumps({'status': 'ERROR'})
+    except Exception as e:
+        return json.dumps({'status': 'Unauthorized access'})
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == "__main__":
     app.run(port=5002)
