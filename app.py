@@ -144,13 +144,28 @@ def showAddWish():
 def addWish():
     try:
         if session.get('user'):
+            if request.form.get('filePath') is None:
+                _filePath = ''
+            else:
+                _filePath = request.form.get('filePath')
+
+            if request.form.get('private') is None:
+                _is_private = 0
+            else:
+                _is_private = 1
+
+            if request.form.get('favorite') is None:
+                _is_favorite = 0
+            else:
+                _is_favorite = 1
+
             _title = request.form['inputTitle']
             _description = request.form['inputDescription']
             _user_id = session.get('user')
 
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.callproc('sp_addItem', (_title, _description, _user_id))
+            cursor.callproc('sp_addItem', (_title, _description, _user_id, _filePath, _is_private, _is_favorite))
             data = cursor.fetchall()
 
             if len(data) is 0:
