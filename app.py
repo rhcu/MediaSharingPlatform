@@ -236,7 +236,8 @@ def getItemById():
             cursor.callproc('sp_GetItemById', (_id, _user))
             result = cursor.fetchall()
 
-            wish = [{'Id': result[0][0], 'Title': result[0][1], 'Description': result[0][2]}]
+            wish = [{'Id': result[0][0], 'Title': result[0][1], 'Description': result[0][2], 'FilePath': result[0][3],
+                     'Private': result[0][4], 'Done': result[0][5]}]
 
             return json.dumps(wish)
         else:
@@ -253,10 +254,13 @@ def updateItem():
             _title = request.form['title']
             _description = request.form['description']
             _item_id = request.form['id']
+            _filePath = request.form['filePath']
+            _isPrivate = request.form['isPrivate']
+            _isFavorite = request.form['isDone']
 
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.callproc('sp_updateItem', (_title, _description, _item_id, _user))
+            cursor.callproc('sp_updateItem', (_title, _description, _item_id, _user, _filePath, _isPrivate, _isFavorite))
             data = cursor.fetchall()
 
             if len(data) is 0:
