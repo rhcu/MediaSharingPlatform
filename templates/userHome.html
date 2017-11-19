@@ -21,7 +21,7 @@
     <script>
 
     $(function(){
-            GetItems();
+            GetItems(1);
             $('#btnUpdate').click(function(){
               $.ajax({
               url : '/updateItem',
@@ -31,7 +31,7 @@
                 
               $('#editModal').modal('hide');
                           
-                GetItems();
+              GetItems(1);
                  
               },
               error: function(error){
@@ -41,21 +41,105 @@
             });
   });
 
-    function GetItems() {
-        $.ajax({
-            url: '/getItem',
-            type: 'GET',
-            success: function(res) {
-                var wishObj = JSON.parse(res);
-                console.log(wishObj);
-               // $('#ulist').empty();
-                $('#listTemplate').tmpl(wishObj).appendTo('#ulist');
-            },
-            error: function(error) {
-                console.log(error);
+    function GetItems(_page) {
+        var _offset = (_page - 1) * 2;
+   
+    $.ajax({
+        url: '/getItem',
+        type: 'POST',
+        data: {
+            offset: _offset
+        },
+        success: function(res) {
+ 
+            var itemsPerPage = 2;
+ 
+            var wishObj = JSON.parse(res);
+ 
+            $('#ulist').empty();
+            $('#listTemplate').tmpl(wishObj[0]).appendTo('#ulist');
+ 
+            var total = wishObj[1]['total'];
+            var pageCount = total / itemsPerPage;
+            var pageRem = total % itemsPerPage;
+            if (pageRem != 0) {
+                pageCount = Math.floor(pageCount) + 1;
             }
-        });
-    }
+ 
+ 
+            $('.pagination').empty();
+ 
+            var pageStart = $('#hdnStart').val();
+            var pageEnd = $('#hdnEnd').val();
+ 
+ 
+ 
+ 
+            if (pageStart > 5) {
+                var aPrev = $('<a/>').attr({
+                        'href': '#'
+                    }, {
+                        'aria-label': 'Previous'
+                    })
+                    .append($('<span/>').attr('aria-hidden', 'true').html('&laquo;'));
+ 
+                $(aPrev).click(function() {
+                    $('#hdnStart').val(Number(pageStart) - 5);
+                    $('#hdnEnd').val(Number(pageStart) - 5 + 4);
+                    GetItems(Number(pageStart) - 5);
+                });
+ 
+                var prevLink = $('<li/>').append(aPrev);
+                $('.pagination').append(prevLink);
+            }
+ 
+ 
+ 
+            for (var i = Number(pageStart); i <= Number(pageEnd); i++) {
+ 
+                if (i > pageCount) {
+                    break;
+                }
+ 
+ 
+                var aPage = $('<a/>').attr('href', '#').text(i);
+ 
+                $(aPage).click(function(i) {
+                    return function() {
+                        GetItems(i);
+                    }
+                }(i));
+                var page = $('<li/>').append(aPage);
+ 
+                if ((_page) == i) {
+                    $(page).attr('class', 'active');
+                }
+ 
+                $('.pagination').append(page);
+ 
+ 
+            }
+            if ((Number(pageStart) + 5) <= pageCount) {
+                var nextLink = $('<li/>').append($('<a/>').attr({
+                        'href': '#'
+                    }, {
+                        'aria-label': 'Next'
+                    })
+                    .append($('<span/>').attr('aria-hidden', 'true').html('&raquo;').click(function() {
+                        $('#hdnStart').val(Number(pageStart) + 5);
+                        $('#hdnEnd').val(Number(pageStart) + 5 + 4);
+                        GetWishes(Number(pageStart) + 5);
+ 
+                    })));
+                $('.pagination').append(nextLink);
+            }
+ 
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
 
     function Edit(elm) {
         localStorage.setItem('editId',$(elm).attr('data-id'));
@@ -83,6 +167,32 @@
         });
 }
 
+function ConfirmDelete(elem) {
+    localStorage.setItem('deleteId', $(elem).attr('data-id'));
+    $('#deleteModal').modal();
+}
+
+function Delete() {
+    $.ajax({
+        url: '/deleteItem',
+        data: {
+            id: localStorage.getItem('deleteId')
+        },
+        type: 'POST',
+        success: function(res) {
+            var result = JSON.parse(res);
+            if (result.status == 'OK') {
+                $('#deleteModal').modal('hide');
+                GetItems(1);
+            } else {
+                alert(result.status);
+            }
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
   
 </script>
 
@@ -128,31 +238,39 @@
     </nav>
             <h3 class="text-muted">Media Sharing Platform</h3>
         </div>
-
  
-        <div class="jumbotron">
+ <script id="listTemplate" type="text/x-jQuery-tmpl">
+        <li class="list-group-item">
+                                 <div class="checkbox">
+                                    <p>
+                                     ${Title}
+                                   </p>
+        </div>
+        <div class="pull-right action-buttons">
+              <a data-id=${Id} data-toggle="modal" data-target="#editModal" ><span class="glyphicon glyphicon-pencil"></span></a>
+              <a data-id=${Id} onclick="ConfirmDelete(this)" ><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </li>
+ </script>
+
+<div class="jumbotron">
             <h1>Welcome Home!</h1>
               <div class="row">
                 <div class="col-md-12">
                     <div class="panel-body">
                         <ul id="ulist" class="list-group">
-                           <script id="listTemplate" type="text/x-jQuery-tmpl">
-                               <li class="list-group-item">
-                                 <div class="checkbox">
-                                    <p>
-                                     ${Title}
-                                   </p>
-                                  </div>
-                            <div class="pull-right action-buttons">
-                            <a data-id=${Id} data-toggle="modal" data-target="#editModal" ><span class="glyphicon glyphicon-pencil"></span></a>
-                            </div>
-                              </li>
-                          </script>
-                      </ul>
+                          
+                        </ul>
                   </div>
                 </div>
             </div>
-        </div>
+</div>
+
+<nav>
+    <ul class="pagination">
+
+    </ul>
+</nav>
  
  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
         <br>
@@ -188,6 +306,36 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:center;">
+                <h4 class="modal-title" style="color:red;" id="deleteModalLabel">Do you want to permanently delete the file?</h4>
+            </div>
+ 
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="Delete()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdnStart" value="1" />
+<input type="hidden" id="hdnEnd" value="5"/>
 
 
       <footer class="footer">
