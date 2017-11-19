@@ -108,7 +108,7 @@ def validateLogin():
         if len(data) > 0:
             if check_password_hash(str(data[0][3]), _password):
                 session['user'] = data[0][0]
-                return redirect('/userHome')
+                return redirect('/showDashboard')
             else:
                 return render_template('error.html', error='Wrong Email address or Password.')
         else:
@@ -300,6 +300,74 @@ def deleteItem():
         cursor.close()
         conn.close()
 
+
+@app.route('/showDashboard')
+def showDashboard():
+    return render_template('dashboard.html')
+
+
+@app.route('/getAllItems')
+def getAllItems():
+    try:
+        if session.get('user'):
+            _user = session.get('user')
+            print("We are here")
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_GetAllItems', (_user,))
+            result = cursor.fetchall()
+
+            wishes_dict = []
+            for wish in result:
+                wish_dict = {
+                    'Id': wish[0],
+                    'Title': wish[1],
+                    'Description': wish[2],
+                    'FilePath': wish[3],
+                    'Like': wish[4],
+                    'HasLiked': wish[5]}
+                wishes_dict.append(wish_dict)
+
+            print(wishes_dict)
+            return json.dumps(wishes_dict)
+        else:
+            return render_template('error.html', error='Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+
+
+@app.route('/addUpdateLike', methods=['POST'])
+def addUpdateLike():
+    try:
+        if session.get('user'):
+            _wishId = request.form['wish']
+            _like = request.form['like']
+            _user = session.get('user')
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_AddUpdateLikes', (_wishId, _user, _like))
+
+            data = cursor.fetchall()
+            if len(data) is 0:
+                conn.commit()
+                cursor.close()
+                conn.close()
+                conn = mysql.connect()
+                cursor = conn.cursor()
+                cursor.callproc('sp_getLikeStatus', (_wishId, _user))
+                result = cursor.fetchall()
+                return json.dumps({'status': 'OK', 'total': result[0][0], 'likeStatus': result[0][1]})
+            else:
+                return render_template('error.html', error='An error occurred!')
+
+        else:
+            return render_template('error.html', error='Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == "__main__":
     app.run(port=5002)
