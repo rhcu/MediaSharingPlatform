@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, json, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flaskext.mysql import MySQL
 from werkzeug.utils import redirect
+from werkzeug.wsgi import LimitedStream
 
 app = Flask(__name__)
 app.secret_key = 'Why would I tell you my secret key?'
@@ -16,29 +17,7 @@ app.config['MYSQL_DATABASE_DB'] = 'media_sharing_platform'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['UPLOAD_FOLDER'] = 'static/Uploads'
 mysql.init_app(app)
-pageLimit = 2
-
-
-"""class StreamConsumingMiddleware(object):
-
-    def __init__(self, app):
-        self.app = app
-
-    def __call__(self, environ, start_response):
-        stream = LimitedStream(environ['wsgi.input'],
-                               int(environ['CONTENT_LENGTH'] or 0))
-        environ['wsgi.input'] = stream
-        app_iter = self.app(environ, start_response)
-        try:
-            stream.exhaust()
-            for event in app_iter:
-                yield event
-        finally:
-            if hasattr(app_iter, 'close'):
-                app_iter.close()
-
-app.config['UPLOAD_FOLDER'] = 'static/Uploads'
-app.wsgi_app = StreamConsumingMiddleware(app.wsgi_app)"""
+pageLimit = 5
 
 
 @app.route("/")
@@ -51,9 +30,7 @@ def upload():
     if request.method == 'POST':
         file = request.files['file']
         extension = os.path.splitext(file.filename)[1]
-        print(extension)
         f_name = str(uuid.uuid4()) + extension
-        print(f_name)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], f_name))
         return json.dumps({'filename': f_name})
 
@@ -186,7 +163,6 @@ def addWish():
 @app.route('/getItem', methods=['POST'])
 def getItem():
     try:
-        print("here")
         if session.get('user'):
 
             _user_id = session.get('user')
@@ -205,7 +181,6 @@ def getItem():
             cursor.execute('select @_sp_GetItemByUser_3')
 
             outParam = cursor.fetchall()
-            print(outParam)
             response = []
             items_dict = []
             for item in items:
@@ -214,7 +189,6 @@ def getItem():
 
             response.append(items_dict)
             response.append({'total': outParam[0][0]})
-            print(response)
 
             return json.dumps(response)
         else:
@@ -255,13 +229,16 @@ def updateItem():
             _description = request.form['description']
             _item_id = request.form['id']
             _filePath = request.form['filePath']
-            _isPrivate = request.form['isPrivate']
-            _isFavorite = request.form['isDone']
+            _is_private = request.form['isPrivate']
+            _is_favorite = request.form['isDone']
 
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.callproc('sp_updateItem', (_title, _description, _item_id, _user, _filePath, _isPrivate, _isFavorite))
+            cursor.execute('sp_updateItem', (_title, _description, _item_id, _user,
+                                             _filePath, _is_private, _is_favorite))
+            print("smth")
             data = cursor.fetchall()
+            print(data)
 
             if len(data) is 0:
                 conn.commit()
@@ -311,7 +288,6 @@ def getAllItems():
     try:
         if session.get('user'):
             _user = session.get('user')
-            print("We are here")
             conn = mysql.connect()
             cursor = conn.cursor()
             cursor.callproc('sp_GetAllItems', (_user,))
@@ -328,7 +304,6 @@ def getAllItems():
                     'HasLiked': wish[5]}
                 wishes_dict.append(wish_dict)
 
-            print(wishes_dict)
             return json.dumps(wishes_dict)
         else:
             return render_template('error.html', error='Unauthorized Access')

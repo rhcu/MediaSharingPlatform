@@ -4,8 +4,6 @@
 <head>
     <title>Pinterest-v1</title>
    
-    <link href="static/signup.css" rel="stylesheet">
-    <link href="static/main.css" rel="stylesheet">
 
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -20,55 +18,66 @@
     <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
      
     <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
+
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="static/main.css" rel="stylesheet">
     
 
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+.w3-bar-block .w3-bar-item {padding:20px}
+</style>
     <script>
         $(function(){
-              $('#fileupload').fileupload({
-                  url: 'upload',
-                  dataType: 'json',
-                  add: function (e, data) {
-                    data.submit();
-                  },
-                  success:function(response,status) {
-              console.log(response.filename);
-              var filePath = 'static/Uploads/' + response.filename;
-              $('#imgUpload').attr('src',filePath);
-              $('#filePath').val(filePath);
-                    console.log('success');
-                  },
-                  error:function(error){
-                    console.log(error);
-                  }
-              });
+                $('#fileupload').fileupload({
+                    url: 'upload',
+                    dataType: 'json',
+                    add: function (e, data) {
+                        data.submit();
+                    },
+                    success:function(response,status) {
+                    console.log(response.filename);
+                    var filePath = 'static/Uploads/' + response.filename;
+                    $('#imgUpload').attr('src',filePath);
+                    $('#filePath').val(filePath);
+                        console.log(filePath);
+                    },
+                    error:function(error){
+                        console.log(error);
+                    }
+                });
         })
     </script>
     <script>
 
     $(function(){
-            GetItems(1);
-            $('#btnUpdate').click(function(){
-              $.ajax({
-              url : '/updateItem',
-              data : {title:$('#editTitle').val(),description:$('#editDescription').val(),id:localStorage.getItem('editId'),filePath:$('#imgUpload').attr('src'),isPrivate:$('#chkPrivate').is(':checked')?1:0,isDone:$('#chkDone').is(':checked')?1:0}, 
-              type : 'POST',
-              success: function(res){
-                
-              $('#editModal').modal('hide');
-                          
-              GetItems(1);
-                 
-              },
-              error: function(error){
+        
+        GetItems(1);
+        $('#btnUpdate').click(function(){
+            $.ajax({
+            url : '/updateItem',
+            data : {title:$('#editTitle').val(),description:$('#editDescription').val(),id:localStorage.getItem('editId'),filePath:$('#imgUpload').attr('src'),isPrivate:$('#chkPrivate').is(':checked')?1:0,isDone:$('#chkDone').is(':checked')?1:0},
+            type : 'POST',
+            success: function(res){
+                $('#editModal').modal('hide');   
+                GetItems(1);
+            },
+            error: function(error){
                 console.log(error);
-              }
-            });
-            });
-  });
+            }
+        });
+        });
+        $('document').on('click','.navigation li a',function(){
+            console.log('me in');
+        });
+    });
 
     function GetItems(_page) {
         var _offset = (_page - 1) * 2;
@@ -81,7 +90,7 @@
         },
         success: function(res) {
  
-            var itemsPerPage = 2;
+            var itemsPerPage = 5;
  
             var wishObj = JSON.parse(res);
  
@@ -157,7 +166,7 @@
                     .append($('<span/>').attr('aria-hidden', 'true').html('&raquo;').click(function() {
                         $('#hdnStart').val(Number(pageStart) + 5);
                         $('#hdnEnd').val(Number(pageStart) + 5 + 4);
-                        GetWishes(Number(pageStart) + 5);
+                        GetItems(Number(pageStart) + 5);
  
                     })));
                 $('.pagination').append(nextLink);
@@ -170,39 +179,34 @@
     });
 }
 
-    function Edit(elm) {
+function Edit(elm){
         localStorage.setItem('editId',$(elm).attr('data-id'));
+        console.log("We are here");
         $.ajax({
-            url: '/getItemById',
-            data: {
-                id: $(elm).attr('data-id')
+            url : '/getWishById',
+            data : {id:$(elm).attr('data-id')},
+            type : 'POST',
+            success: function(res){
+                
+                var data = JSON.parse(res);
+                console.log(data);
+                $('#editTitle').val(data[0]['Title']);
+                $('#editDescription').val(data[0]['Description']);
+                $('#imgUpload').attr('src',data[0]['FilePath']);
+                if(data[0]['Private']=="1"){
+                    $('#chkPrivate').attr('checked','checked');
+                }
+                if(data[0]['Done']=="1"){
+                    $('#chkDone').attr('checked','checked');
+                }
+                $('#editModal').modal();
+                
             },
-            type: 'POST',
-            success: function(res) {
-              var data = JSON.parse(res);
-     
-              $('#editTitle').val(data[0]['Title']);
-             
-              $('#editDescription').val(data[0]['Description']);
-             
-              $('#imgUpload').attr('src', data[0]['FilePath']);
-             
-              if (data[0]['Private'] == "1") {
-                  $('#chkPrivate').attr('checked', 'checked');
-              }
-             
-              if (data[0]['Done'] == "1") {
-                  $('#chkDone').attr('checked', 'checked');
-              }
-             
-              $('#editModal').modal();
-       
-            },
-            error: function(error) {
+            error: function(error){
                 console.log(error);
             }
         });
-}
+    }
 
 function ConfirmDelete(elem) {
     localStorage.setItem('deleteId', $(elem).attr('data-id'));
@@ -236,12 +240,13 @@ function Delete() {
 
      <style>
         .trash {
-            color: rgb(209, 91, 71);
+            color: rgb(78, 149, 216);
         }
         .panel-body .checkbox {
             display: inline-block;
             margin: 0px;
         }
+
         .list-group {
             margin-bottom: 0px;
         }
@@ -249,10 +254,7 @@ function Delete() {
 </head>
  
 <body>
- 
-<div class="container">
-        <div class="header">
-             <!-- Navigation -->
+    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
         <a class="navbar-brand" href="#">Pinterest-v1</a>
@@ -275,15 +277,16 @@ function Delete() {
         </div>
       </div>
     </nav>
-            <h3 class="text-muted">Media Sharing Platform</h3>
-        </div>
- 
  <script id="listTemplate" type="text/x-jQuery-tmpl">
-        <li class="list-group-item">
-                                 <div class="checkbox">
-                                    <p>
-                                     ${Title}
-                                   </p>
+    <li class="list-group-item">
+        <div class="checkbox">
+            <p><b>
+                ${Title}
+            </b></p>
+            <h4><em>
+                ${Description}
+            </em></h4>
+            <h6>${Date}</h6>
         </div>
         <div class="pull-right action-buttons">
               <a data-id=${Id} data-toggle="modal" data-target="#editModal" ><span class="glyphicon glyphicon-pencil"></span></a>
@@ -293,16 +296,16 @@ function Delete() {
  </script>
 
 <div class="jumbotron">
-            <h1>Welcome Home!</h1>
-              <div class="row">
-                <div class="col-md-12">
-                    <div class="panel-body">
-                        <ul id="ulist" class="list-group">
+     <center><h3>Welcome Home!</h3></center>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel-body">
+                    <ul id="ulist" class="list-group">
                           
-                        </ul>
-                  </div>
-                </div>
+                    </ul>
             </div>
+        </div>
+    </div>
 </div>
 
 <nav>
@@ -342,7 +345,7 @@ function Delete() {
                         <div class="input-group">
                             <span class="input-group-btn">
                                         <span class="btn btn-primary btn-file">
-                                            Browse&hellip; <input type="file" id="fileupload" name="file" multiple>
+                                             <input type="file" id="fileupload" name="file" multiple>
                                         </span>
                             </span>
                             <div class="pull-right">
@@ -362,7 +365,7 @@ function Delete() {
                 <div class="form-group">
                     <label>Is this your favorite item?</label>
                     <br/>
-                    <input id="chkDone" name="done" type="checkbox"> Mark as Favorite <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    <input id="chkDone" name="done" type="checkbox" style="color:yellow;"> Mark as Favorite <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                 </div>
                 </form>
             </div>
@@ -408,7 +411,6 @@ function Delete() {
       <footer class="footer">
         <p>&copy; Supersonic 2017</p>
       </footer>
- 
  
 
 </body>

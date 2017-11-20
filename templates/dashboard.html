@@ -6,10 +6,22 @@
    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <link href="static/main.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
-
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+.w3-bar-block .w3-bar-item {padding:20px}
+</style>
         <script>
         $(function(){
                 $.ajax({
@@ -145,8 +157,40 @@
   </head>
 
   <body>
+  <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top " style="background-color: #ed54f6;">
+      <div class="container">
+        <a class="navbar-brand" href="#">Pinterest-v1</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Dashboard
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/userHome">My List</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/showAddWish">Add Item</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  
 
-   <div class="container">
+
+  
+
+
+<!---<div class="container">
 <div class="header">
         <nav>
           <ul class="nav nav-pills pull-right">
@@ -157,7 +201,7 @@
           </ul>
         </nav>
         <h3 class="text-muted">Python Flask App</h3>
-      </div>
+      </div> -->
 
 
     

@@ -2,25 +2,18 @@
 <html lang="en">
  
 <head>
-    <title>Python Flask Bucket List App</title>
+    <title>Pinterest-v1</title>
 
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
  
-   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
     <script src="../static/js/jquery.ui.widget.js"></script>
- 
     <script type="text/javascript" src="../static/js/jquery.fileupload.js"></script>
-         
     <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
-     
     <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
 
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
     <link href="static/main.css" rel="stylesheet">
 
     <style>
@@ -49,22 +42,22 @@
     <script>
         $(function() {
              $('#fileupload').fileupload({
-                        url: '/upload',
-                        dataType: 'json',
-                        add: function(e, data) {
-                            data.submit();
-                        },
-                        success: function(response, status) {
-                            console.log(response);
-                            var filePath = 'static/Uploads/' + response.filename;
-                            $('#imgUpload').attr('src', filePath);
-                            $('#filePath').val(filePath);
-                        },
-                    error: function(error) {
-                        console.log(error);
-                    }
-                });
-            })
+                url: '/upload',
+                dataType: 'json',
+                add: function(e, data) {
+                    data.submit();
+                },
+                success: function(response, status) {
+                    console.log(response);
+                    var filePath = 'static/Uploads/' + response.filename;
+                    $('#imgUpload').attr('src', filePath);
+                    $('#filePath').val(filePath);
+                },
+                 error: function(error) {
+                    console.log(error);
+                }
+            });
+        })
     </script>
  
 </head>
@@ -73,62 +66,52 @@
  
     <div class="container">
         <div class="header">
-           <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="#">Pinterest-v1</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/userHome">Home
-              </a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Add Item
-              <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/showDashboard">Dashboard
-              </a> </li>
-           
-          </ul>
-        </div>
-      </div>
-    </nav>
-    
-
+        <!-- Navigation -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+              <div class="container">
+                <a class="navbar-brand" href="#">Pinterest-v1</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                  <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                      <a class="nav-link" href="/userHome">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Add Item
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/showDashboard">Dashboard</a> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
             <h3 class="text-muted">Media-sharing platform</h3>
         </div>
         <section>
             <form role="form" method="post" action="/addWish">
- 
- 
+
             <!-- Form Name -->
             <legend>Create Your Wish</legend>
  
             <!-- Text input-->
             <div class="form-group">
                 <label for="txtTitle">Title</label>
- 
                 <input id="txtTitle" name="inputTitle" type="text" placeholder="placeholder" class="form-control input-md">
- 
             </div>
  
             <!-- Textarea -->
             <div class="form-group">
                 <label for="txtPost">Description</label>
- 
                 <textarea class="form-control" id="txtPost" name="inputDescription"></textarea>
- 
             </div>
- 
  
             <div class="form-group">
                 <label for="txtPost">Photos</label>
- 
                 <div class="input-group">
                     <span class="input-group-btn">
                     <span class="btn btn-primary btn-file">
@@ -139,7 +122,6 @@
                         <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail">
                     </div>
                 </div>
- 
             </div>
  
             <div class="form-group">
@@ -156,16 +138,12 @@
  
  
             <input type="hidden" name="filePath" id="filePath"></input>
- 
             <!-- Button -->
             <div class="form-group">
- 
                 <p class="text-center">
                     <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Publish" />
                 </p>
             </div>
- 
- 
         </form>
         </section>
        
