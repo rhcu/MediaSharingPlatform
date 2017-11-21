@@ -183,11 +183,11 @@ function Edit(elm){
         localStorage.setItem('editId',$(elm).attr('data-id'));
         console.log("We are here");
         $.ajax({
-            url : '/getWishById',
+            url : '/getItemById',
             data : {id:$(elm).attr('data-id')},
             type : 'POST',
             success: function(res){
-                
+                console.log(res);
                 var data = JSON.parse(res);
                 console.log(data);
                 $('#editTitle').val(data[0]['Title']);
@@ -289,8 +289,8 @@ function Delete() {
             <h6>${Date}</h6>
         </div>
         <div class="pull-right action-buttons">
-              <a data-id=${Id} data-toggle="modal" data-target="#editModal" ><span class="glyphicon glyphicon-pencil"></span></a>
-              <a data-id=${Id} onclick="ConfirmDelete(this)" ><span class="glyphicon glyphicon-trash"></span></a>
+              <a data-id="${Id}" onclick="Edit(this)" data-toggle="modal" data-target="#editModal" ><span class="glyphicon glyphicon-pencil"></span></a>
+              <a data-id="${Id}" onclick="ConfirmDelete(this)" ><span class="glyphicon glyphicon-trash"></span></a>
         </div>
     </li>
  </script>

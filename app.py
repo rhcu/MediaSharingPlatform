@@ -234,9 +234,10 @@ def updateItem():
 
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.execute('sp_updateItem', (_title, _description, _item_id, _user,
-                                             _filePath, _is_private, _is_favorite))
-            print("smth")
+
+            cursor.callproc('sp_updateItem', (str(_title), str(_description), int(_item_id), int(_user),
+                                             str(_filePath), int(_is_private), int(_is_favorite)))
+
             data = cursor.fetchall()
             print(data)
 
@@ -246,6 +247,8 @@ def updateItem():
             else:
                 return json.dumps({'status': 'ERROR'})
     except Exception as e:
+        raise e
+
         return json.dumps({'status': 'Unauthorized access'})
     finally:
         cursor.close()
