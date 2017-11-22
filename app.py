@@ -55,7 +55,8 @@ def signUp():
             data = cursor.fetchall()
             if len(data) is 0:
                 conn.commit()
-                return json.dumps({'message': 'User created successfully !'})
+                return redirect('/showSignIn')
+
             else:
                 return json.dumps({'error': str(data[0])})
         else:
@@ -103,12 +104,12 @@ def userHome():
     if session.get('user'):
         return render_template('userHome.html')
     else:
-        return render_template('error.html', error = 'Unauthorized Access')
+        return render_template('error.html', error='Unauthorized Access')
 
 
 @app.route('/logout')
 def logout():
-    session.pop('user',None)
+    session.pop('user', None)
     return redirect('/')
 
 
@@ -236,7 +237,7 @@ def updateItem():
             cursor = conn.cursor()
 
             cursor.callproc('sp_updateItem', (str(_title), str(_description), int(_item_id), int(_user),
-                                             str(_filePath), int(_is_private), int(_is_favorite)))
+                                              str(_filePath), int(_is_private), int(_is_favorite)))
 
             data = cursor.fetchall()
             print(data)
@@ -304,7 +305,10 @@ def getAllItems():
                     'Description': wish[2],
                     'FilePath': wish[3],
                     'Like': wish[4],
-                    'HasLiked': wish[5]}
+                    'HasLiked': wish[5],
+                    'isFavorite': wish[6],
+                    'Username': wish[7],
+                    'DateUpload': wish[8]}
                 wishes_dict.append(wish_dict)
 
             return json.dumps(wishes_dict)
@@ -346,6 +350,40 @@ def addUpdateLike():
     finally:
         cursor.close()
         conn.close()
+
+
+@app.route('/searchItem', methods=['POST'])
+def searchItem():
+    try:
+        if session.get('user'):
+            print("We are here!")
+            _user = session.get('user')
+            print(_user)
+            _data = request.form['searchItem']
+            print(_user,_data)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_searchItem', (_data, _user))
+            results = cursor.fetchall()
+            print(results)
+
+            items = []
+
+            for result in results:
+                item_dict = {'Id': result[0], 'Title': result[1], 'Description': result[2], 'FilePath': result[3],
+                             'Username':result[4], 'Like': result[5], 'HasLiked': result[6], 'isFavorite': result[7],
+                             'DateUpload': result[8]}
+                items.append(item_dict)
+            return json.dumps(items)
+        else:
+            return render_template('error.html', error='Unauthorized Access')
+    except Exception as e:
+        print(e)
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
 
 if __name__ == "__main__":
     app.run(port=5002)

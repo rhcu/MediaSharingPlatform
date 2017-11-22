@@ -22,36 +22,63 @@
 body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
 .w3-bar-block .w3-bar-item {padding:20px}
 </style>
+<script>
+            $(function() {
+                    $('#searchButton').click(function() {
+                        var searchItem = $('#searchItem').val();
+                        console.log(searchItem);
+                        $.ajax({
+                            url: '/searchItem',
+                            data: {searchItem: searchItem},
+                            type: 'POST',
+                            success: function(response) {
+                                console.log(response);
+                                $('.well').empty();
+                                var data = JSON.parse(response);
+                                var div = $('<div>').attr('class','row');
+                                for(var i = 0; i < response.length; i++) {
+                                    div.append(CreateThumb(data[i].Id, data[i].Title, data[i].Description, data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite, data[i].Username, data[i].DateUpload));
+                                    $('.well').append(div);
+                                }
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        });
+                });
+            });
+
+    </script>
         <script>
         $(function(){
                 $.ajax({
                     url: '/getAllItems',
                     type: 'GET',
                     success:function(response) {
-                    console.log(response);
+                        console.log(response);
                     var data = JSON.parse(response);
                     var itemsPerRow = 0;
                     var div = $('<div>').attr('class','row');
                     for(var i=0;i<data.length;i++){
 
-                        console.log(data[i].Title);
                         
                         
                         if(itemsPerRow<3){
-                            console.log(i);
                             if(i==data.length-1){
-                                div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked));
+                                div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite,data[i].Username, data[i].DateUpload));
                                 $('.well').append(div);
                             }
                             else{
-                            div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked));
+
+                            div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite,data[i].Username, data[i].DateUpload));
                             itemsPerRow++;
                             }
                         }
                         else{
                             $('.well').append(div);
                             div = $('<div>').attr('class','row');
-                            div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked));
+
+                            div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite,data[i].Username, data[i].DateUpload));
                             if(i==data.length-1){
                                 $('.well').append(div);
                             }
@@ -85,7 +112,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
                 });
             });
         })
-        function CreateThumb(id, title, desc, filepath, like, hasLiked) {
+        function CreateThumb(id, title, desc, filepath, like, hasLiked, isFavorite, Username, DateUpload) {
 
             var mainDiv = $('<div>').attr('class', 'col-sm-4 col-md-4');
             var thumbNail = $('<div>').attr('class', 'thumbnail');
@@ -109,16 +136,41 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
                 'class': 'glyphicon glyphicon-thumbs-up',
                 'aria-hidden': 'true'
             });
-         
+            
             var likeSpan = $('<span>').attr({'aria-hidden':'true','id':'span_'+id});
+
+            var userSpan = $('<span>').attr({'aria-hidden':'true','id':'span_'+Username});
+            userSpan.html('<b>' +Username+'<b>');
          
+            var dateSpan = $('<span>').attr({'aria-hidden':'true','id':'span_'+DateUpload});
+            dateSpan.html(DateUpload);
             if (hasLiked == "1") {
                     likeSpan.html('&nbsp;You & ' + (Number(like) - 1) + ' Others');
                 } else {
                     likeSpan.html('&nbsp;' + like + ' like(s)');
                 }
+
+  
+            if (isFavorite == "1") {
+                    var span2 = $('<span style="font-size:20px;">').attr({
+                'class': 'glyphicon glyphicon-star text-warning fa-5x',
+                 
+                'aria-hidden': 'true'
+                });
+                    p.append(span2);
+                } 
+
             p.append(btn.append(span));
             p.append(likeSpan);
+            p.append('<br>');
+            p.append('<br>');
+            p.append('Uploaded by: ');
+            p.append(userSpan);
+            p.append('<br>');
+            p.append('Date: ');
+            p.append(dateSpan);
+
+
          
          
             caption.append(title);
@@ -161,7 +213,20 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark  fixed-top ">
       <div class="container">
         <a class="navbar-brand" href="#">Pinterest-v1</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="col-lg-4">
+         <div class="input-group">
+                <input type="text" class="form-control" name="searchItem"  id="searchItem" placeholder="Search here"  rows="1" cols="25" required autofocus>
+                 <span class="input-group-btn">
+            <button type="button" class="btn btn-default btn-sm" >
+            <span id ="searchButton" class="glyphicon glyphicon-search" >Search</span>
+            </button>
+             </span>
+        </div>
+        </div >
+       
+         
+        
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
@@ -180,6 +245,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
               <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
             </li>
+            
           </ul>
         </div>
       </div>
@@ -211,9 +277,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
 </div>
     
 
-      <footer class="footer">
-        <p>&copy; Company 2015</p>
-      </footer>
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Supersonic 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
 
     </div>
   </body>

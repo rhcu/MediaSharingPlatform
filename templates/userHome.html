@@ -3,26 +3,27 @@
  
 <head>
     <title>Pinterest-v1</title>
-   
-
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
 
-    <script src="../static/js/jquery.ui.widget.js"></script>
+    <script src="/static/js/jquery.ui.widget.js"></script>
  
-    <script type="text/javascript" src="../static/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.fileupload.js"></script>
      
-    <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.fileupload-process.js"></script>
      
-    <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.fileupload-ui.js"></script>
 
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
 
     <!-- Custom styles for this template -->
+
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/main.css" rel="stylesheet">
+    <link href="/static/signup.css" rel="stylesheet">
     
 
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
@@ -30,9 +31,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+
+
 <style>
 body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
-.w3-bar-block .w3-bar-item {padding:20px}
 </style>
     <script>
         $(function(){
@@ -63,7 +65,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
         $('#btnUpdate').click(function(){
             $.ajax({
             url : '/updateItem',
-            data : {title:$('#editTitle').val(),description:$('#editDescription').val(),id:localStorage.getItem('editId'),filePath:$('#imgUpload').attr('src'),isPrivate:$('#chkPrivate').is(':checked')?1:0,isDone:$('#chkDone').is(':checked')?1:0},
+            data : {title:$('#editTitle').val(), description:$('#editDescription').val(), id:localStorage.getItem('editId'), filePath:$('#imgUpload').attr('src'), isPrivate:$('#chkPrivate').is(':checked')?1:0, isDone:$('#chkDone').is(':checked')?1:0},
             type : 'POST',
             success: function(res){
                 $('#editModal').modal('hide');   
@@ -407,11 +409,13 @@ function Delete() {
 <input type="hidden" id="hdnStart" value="1" />
 <input type="hidden" id="hdnEnd" value="5"/>
 
+ <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Supersonic 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
 
-      <footer class="footer">
-        <p>&copy; Supersonic 2017</p>
-      </footer>
- 
 
 </body>
  
