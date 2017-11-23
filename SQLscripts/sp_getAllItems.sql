@@ -10,7 +10,8 @@ BEGIN
     CAST(sum(l.item_like) as UNSIGNED ) as likeSum, hasLiked(i.item_id,_user), i.item_favorite, u.Username, i.item_date
     from (tbl_item as i left outer join tbl_likes as l on i.item_id = l.item_id) join user as u on u.user_id = i.item_user_id
     where i.item_private = 0
-    group by i.item_id;
+    group by i.item_id
+    order by likeSum desc;
 END$$
  
 DELIMITER ;

@@ -22,8 +22,9 @@
     <!-- Custom styles for this template -->
 
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/main.css" rel="stylesheet">
+
     <link href="/static/signup.css" rel="stylesheet">
+    
     
 
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
@@ -31,10 +32,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
-
+    <link href="static/main.css" rel="stylesheet">
 
 <style>
-body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+body,h1,h2,h3,h4,h5,h6 {
+    font-family: "Karma", sans-serif;
+    margin:25px;
+}
+body{
+    background-image: url("http://moziru.com/images/drawn-sky-cloud-tumblr-6.jpg");
+}
+nav{
+    margin-top: -80px;
+}
 </style>
     <script>
         $(function(){
@@ -258,12 +268,13 @@ function Delete() {
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div class="container">
+      
         <a class="navbar-brand" href="#">Pinterest-v1</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
+         <div class="navbar-inner" style="float:right"> 
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
               <a class="nav-link" href="/logout">Log out
@@ -276,7 +287,7 @@ function Delete() {
               <a class="nav-link" href="/showDashboard">Dashboard
               </a> </li>
           </ul>
-        </div>
+      </div>
       </div>
     </nav>
  <script id="listTemplate" type="text/x-jQuery-tmpl">
@@ -291,8 +302,8 @@ function Delete() {
             <h6>${Date}</h6>
         </div>
         <div class="pull-right action-buttons">
-              <a data-id="${Id}" onclick="Edit(this)" data-toggle="modal" data-target="#editModal" ><span class="glyphicon glyphicon-pencil"></span></a>
-              <a data-id="${Id}" onclick="ConfirmDelete(this)" ><span class="glyphicon glyphicon-trash"></span></a>
+              <a data-id="${Id}" onclick="Edit(this)" data-toggle="modal" data-target="#editModal" ><span class="glyphicon glyphicon-pencil text-primary"></span></a>
+              <a data-id="${Id}" onclick="ConfirmDelete(this)" ><span class="glyphicon glyphicon-trash text-primary"></span></a>
         </div>
     </li>
  </script>
@@ -308,13 +319,12 @@ function Delete() {
             </div>
         </div>
     </div>
+
+    <center> <ul class="pagination"> </ul> </center>
+
 </div>
 
-<nav>
-    <ul class="pagination">
 
-    </ul>
-</nav>
  
  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
         <br>
@@ -361,13 +371,13 @@ function Delete() {
                 <div class="form-group">
                     <label>Mark this as private and not visible to others.</label>
                     <br/>
-                    <input id="chkPrivate" name="private" type="checkbox"> Mark as Private <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    <input id="chkPrivate" name="private" type="checkbox"> Mark as Private <span class="glyphicon glyphicon-lock text-danger" aria-hidden="true"></span>
                 </div>
                  
                 <div class="form-group">
                     <label>Is this your favorite item?</label>
                     <br/>
-                    <input id="chkDone" name="done" type="checkbox" style="color:yellow;"> Mark as Favorite <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    <input id="chkDone" name="done" type="checkbox" style="color:yellow;"> Mark as Favorite <span class="glyphicon glyphicon-star text-warning" aria-hidden="true"></span>
                 </div>
                 </form>
             </div>
@@ -405,7 +415,6 @@ function Delete() {
         </div>
     </div>
 </div>
-
 <input type="hidden" id="hdnStart" value="1" />
 <input type="hidden" id="hdnEnd" value="5"/>
 

@@ -31,7 +31,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
 				            data: $('form').serialize(),
 				            type: 'POST',
 				            success: function(response) {
-				                console.log(response);
+				                window.location = "/showSignin";
 				            },
 				            error: function(error) {
 				                console.log(error);

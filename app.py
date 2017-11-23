@@ -1,15 +1,15 @@
 import os
 import uuid
 
-from flask import Flask, render_template, request, json, session
+from flask import Flask, render_template, request, json, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flaskext.mysql import MySQL
 from werkzeug.utils import redirect
-from werkzeug.wsgi import LimitedStream
 
 app = Flask(__name__)
 app.secret_key = 'Why would I tell you my secret key?'
 mysql = MySQL()
+
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'ran21Dom03!'
@@ -55,7 +55,8 @@ def signUp():
             data = cursor.fetchall()
             if len(data) is 0:
                 conn.commit()
-                return redirect('/showSignIn')
+                return redirect(url_for('showSignin'))
+
 
             else:
                 return json.dumps({'error': str(data[0])})
@@ -384,6 +385,35 @@ def searchItem():
         cursor.close()
         conn.close()
 
+@app.route('/favItem', methods=['POST', 'GET'])
+def favItem():
+    try:
+        if session.get('user'):
+            print("We are here in fav!")
+            _user = session.get('user')
+            print(_user)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_favItem', (_user,))
+            results = cursor.fetchall()
+            print(results)
+
+            items = []
+
+            for result in results:
+                item_dict = {'Id': result[0], 'Title': result[1], 'Description': result[2], 'FilePath': result[3],
+                             'Username':result[4], 'Like': result[5], 'HasLiked': result[6], 'isFavorite': result[7],
+                             'DateUpload': result[8]}
+                items.append(item_dict)
+            return json.dumps(items)
+        else:
+            return render_template('error.html', error='Unauthorized Access')
+    except Exception as e:
+        print(e)
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == "__main__":
     app.run(port=5002)

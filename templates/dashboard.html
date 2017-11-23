@@ -19,18 +19,52 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
 <style>
-body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif;
+}
+
 .w3-bar-block .w3-bar-item {padding:20px}
+#favButton {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
 </style>
 <script>
             $(function() {
                     $('#searchButton').click(function() {
                         var searchItem = $('#searchItem').val();
-                        console.log(searchItem);
                         $.ajax({
                             url: '/searchItem',
                             data: {searchItem: searchItem},
                             type: 'POST',
+                            success: function(response) {
+                                $('.well').empty();
+                                var data = JSON.parse(response);
+                                var div = $('<div>').attr('class','row');
+                                for(var i = 0; i < response.length; i++) {
+                                    div.append(CreateThumb(data[i].Id, data[i].Title, data[i].Description, data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite, data[i].Username, data[i].DateUpload));
+                                    $('.well').append(div);
+                                }
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        });
+                });
+            });
+
+				$(function() {
+                    $('#favButton').click(function() {
+                      
+                        $.ajax({
+                            url: '/favItem',
+                            
+                            type: 'GET',
                             success: function(response) {
                                 console.log(response);
                                 $('.well').empty();
@@ -48,6 +82,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
                 });
             });
 
+
     </script>
         <script>
         $(function(){
@@ -55,35 +90,19 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
                     url: '/getAllItems',
                     type: 'GET',
                     success:function(response) {
-                        console.log(response);
                     var data = JSON.parse(response);
                     var itemsPerRow = 0;
                     var div = $('<div>').attr('class','row');
                     for(var i=0;i<data.length;i++){
-
-                        
-                        
-                        if(itemsPerRow<3){
                             if(i==data.length-1){
                                 div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite,data[i].Username, data[i].DateUpload));
                                 $('.well').append(div);
                             }
                             else{
-
                             div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite,data[i].Username, data[i].DateUpload));
-                            itemsPerRow++;
+                          
                             }
-                        }
-                        else{
-                            $('.well').append(div);
-                            div = $('<div>').attr('class','row');
-
-                            div.append(CreateThumb(data[i].Id,data[i].Title,data[i].Description,data[i].FilePath, data[i].Like, data[i].HasLiked, data[i].isFavorite,data[i].Username, data[i].DateUpload));
-                            if(i==data.length-1){
-                                $('.well').append(div);
-                            }
-                            itemsPerRow = 0;
-                        }
+                  
                     }
                     
                     },
@@ -252,28 +271,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
     </nav>
   
 
-
-  
-
-
-<!---<div class="container">
-<div class="header">
-        <nav>
-          <ul class="nav nav-pills pull-right">
-        <li role="presentation" class="active"><a href="#">Dasboard</a></li>
-        <li role="presentation"><a href="/userHome">My List</a></li>
-        <li role="presentation"><a href="/showAddWish">Add Item</a></li>
-            <li role="presentation" ><a href="/logout">Logout</a></li>
-          </ul>
-        </nav>
-        <h3 class="text-muted">Python Flask App</h3>
-      </div> -->
-
-
-    
-
 <div class="well">
-
+<center><button id="favButton" class="favButton" >Show only favorites</button></center>
+<br>
 </div>
     
 
